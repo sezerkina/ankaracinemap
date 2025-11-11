@@ -15,10 +15,12 @@
 @font-face {font-family: 'Gotham'; src: url('https://raw.githubusercontent.com/sezerkina/deneme2/main/fonts/Gotham%20Bold.otf') format('opentype'); font-weight:700; font-style:normal;}
 
 html,body{height:100%;margin:0;font-family:Gotham, "Helvetica Neue", Arial, sans-serif;background:#f7f9fb;}
+
 /* -------- SIDEBAR -------- */
 #sidebar{position:absolute;left:0;top:0;width:340px;height:100%;background:#fff;border-right:1px solid #e6eef6;box-shadow:2px 0 6px rgba(0,0,0,0.06);padding:18px;box-sizing:border-box;overflow:auto;transition:all .32s ease;z-index:1200;}
 #sidebar.closed{width:44px;padding:8px 6px;}
-#toggle-btn{position:absolute;top:14px;right:-22px;width:22px;height:34px;background:#fff;border:1px solid #e6eef6;border-left:none;border-radius:0 4px 4px 0;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2000;}
+#toggle-btn{position:absolute;top:10px;left:10px;width:28px;height:28px;background:#fff;border:1px solid #d0d7df;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2000;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
+#toggle-btn:hover{background:#f3f4f6;}
 #sidebar h1{font-weight:700;font-size:12pt;margin:4px 0 8px;}
 #sidebar .description{font-weight:400;font-style:italic;font-size:8pt;color:#445;line-height:1.2;margin-bottom:12px;}
 #search{width:100%;padding:6px 8px;font-size:8pt;font-style:italic;border:1px solid #d0d7df;border-radius:6px;margin-bottom:12px;box-sizing:border-box;}
@@ -33,6 +35,7 @@ html,body{height:100%;margin:0;font-family:Gotham, "Helvetica Neue", Arial, sans
 /* -------- HARİTA -------- */
 #map{position:absolute;left:340px;top:0;right:0;bottom:0;transition:left .32s ease;z-index:1;}
 #sidebar.closed ~ #map{left:44px;}
+.leaflet-control-zoom{position:absolute !important;bottom:20px;right:20px;} /* zoom sağ alt köşe */
 
 /* responsive */
 @media (max-width:800px){ #sidebar{width:260px;} #map{left:260px;} }
@@ -44,7 +47,6 @@ html,body{height:100%;margin:0;font-family:Gotham, "Helvetica Neue", Arial, sans
 
 <body>
 <aside id="sidebar">
-  <div id="toggle-btn" title="Paneli daralt">◀</div>
   <h1>Ankara Sineması Haritası: Filmler ve Mekânlar 🎬</h1>
   <div class="description">
     Bu çalışma Ankara Üniversitesi Sosyal Bilimler Enstitüsü Radyo Televizyon ve Sinema Anabilim Dalı'nda 
@@ -55,6 +57,7 @@ html,body{height:100%;margin:0;font-family:Gotham, "Helvetica Neue", Arial, sans
   <div id="film-list"></div>
 </aside>
 <div id="map"></div>
+<div id="toggle-btn" title="Paneli Aç/Kapat">◀</div>
 
 <script>
 // Yardımcı: "folder" bilgisinden film adını temizle
@@ -72,6 +75,9 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap contributors, &copy; Carto',
   maxZoom: 22
 }).addTo(map);
+
+// Zoom kontrolünü sağ alt köşeye taşır
+map.zoomControl.setPosition('bottomright');
 
 let films = {};
 let featureToLayer = new Map();
@@ -161,20 +167,14 @@ fetch('merged_from_kmz.geojson')
     });
   });
 
-  // Paneli aç/kapa
+  // Panel aç/kapa butonu
   const toggle=document.getElementById('toggle-btn');
   const sidebar=document.getElementById('sidebar');
   toggle.addEventListener('click',(e)=>{
     e.stopPropagation();
     sidebar.classList.toggle('closed');
-    const mapEl=document.getElementById('map');
-    if(sidebar.classList.contains('closed')){
-      toggle.textContent='▶';
-      mapEl.style.left='44px';
-    } else {
-      toggle.textContent='◀';
-      mapEl.style.left='340px';
-    }
+    if(sidebar.classList.contains('closed')){ toggle.textContent='▶'; }
+    else { toggle.textContent='◀'; }
     map.invalidateSize();
   });
 
