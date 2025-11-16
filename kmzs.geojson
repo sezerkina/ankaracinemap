@@ -5650,7 +5650,10 @@
           "opacity": 1,
           "width": 1.194
         },
-        "image": "images/meydankopegi1966/meydankopegi1966__kortej__001.png"
+        "images": [
+          "images/meydankopegi1966/meydankopegi1966__kortej__001.png",
+          "images/meydankopegi1966/meydankopegi1966__kortej__002.png"
+        ]
       }
     },
     {
